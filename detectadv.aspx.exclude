@@ -1,0 +1,67 @@
+<%@ Page Language="C#" autoEventWireup="true"%>
+<html>
+<head>
+<title>Detect Browser</title>
+</head>
+<body>
+<script runat="server">
+    void Page_Load(Object src, EventArgs e)
+    {
+           Type myType =(typeof(System.Web.Mobile.MobileCapabilities));
+           System.Reflection.PropertyInfo[] myPropertyInfo = myType.GetProperties(System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.Instance);
+           Response.Write ("<table border=1 cellpadding=5 cellspacing=0>");
+           DisplayPropertyInfo(myType,myPropertyInfo);
+           Response.Write ("</table>");
+           System.Web.HttpBrowserCapabilities bc = new HttpBrowserCapabilities();
+           StringBuilder sb = new StringBuilder();
+           //sb.Append("Beta:").AppendLine(bc.Beta.ToString());
+           //sb.Append("Browser:").AppendLine(bc.Browser);
+           //sb.Append("ClrVersion:").AppendLine(bc.ClrVersion.ToString());
+           //sb.Append("id:").AppendLine(bc.Id);
+
+           //sb.Append("IsMobileDevice:").AppendLine(bc.IsMobileDevice.ToString());
+           //sb.Append("MajorVersion:").AppendLine(bc.MajorVersion.ToString());
+           //sb.Append("MinorVersion:").AppendLine(bc.MinorVersion.ToString());
+           //sb.Append("MobileDeviceManufacturer:").AppendLine(bc.MobileDeviceManufacturer);
+           //sb.Append("MinorVersionString:").AppendLine(bc.MinorVersionString);
+           //sb.Append("MobileDeviceModel:").AppendLine(bc.MobileDeviceModel);
+           //sb.Append("MSDomVersion:").AppendLine(bc.MSDomVersion.ToString());
+           //sb.Append("Platform:").AppendLine(bc.Platform);
+           //sb.Append("Version:").AppendLine(bc.Version);
+           sb.Append("User Agent:").AppendLine(Request.ServerVariables["HTTP_USER_AGENT"].ToString()).AppendLine("<br/>");
+           sb.Append("User Agent:").AppendLine(Request.UserAgent);
+           sb.Append("Browser:").AppendLine(Request.Browser.Browser).AppendLine("<br/>");
+           sb.Append("ClrVersion:").AppendLine(Request.Browser.ClrVersion.ToString()).AppendLine("<br/>");
+           sb.Append("MajorVersion:").AppendLine(Request.Browser.MajorVersion.ToString()).AppendLine("<br/>");
+           sb.Append("MobileDeviceManufacturer:").AppendLine(Request.Browser.MobileDeviceManufacturer).AppendLine("<br/>");
+           sb.Append("MobileDeviceModel:").AppendLine(Request.Browser.MobileDeviceModel).AppendLine("<br/>");
+           sb.Append("Platform:").AppendLine(Request.Browser.Platform).AppendLine("<br/>");
+           sb.Append("Type:").AppendLine(Request.Browser.Type).AppendLine("<br/>");
+           sb.Append("Version:").AppendLine(Request.Browser.Version).AppendLine("<br/>");
+
+        
+        Response.Write(sb.ToString());
+    }
+    void DisplayPropertyInfo(Type t,System.Reflection.PropertyInfo[] myPropertyInfo)
+    {
+        // Display information for all properties.
+        System.Web.Mobile.MobileCapabilities m=( System.Web.Mobile.MobileCapabilities)Request.Browser;
+        for(int i=0;i<myPropertyInfo.Length;i++)
+        {
+            Object result=new Object();
+            System.Reflection.PropertyInfo myPropInfo = (System.Reflection.PropertyInfo)myPropertyInfo[i];
+            try
+            {
+                    result = t.InvokeMember (myPropInfo.Name, System.Reflection.BindingFlags.GetProperty|System.Reflection.BindingFlags.GetField, null, m, new object [] {});
+            }
+            catch (System.MissingMethodException e)
+            {
+                result =e.Message;
+            }
+            Response.Write ("<tr><td>" + myPropInfo.Name+ " </td><td>" + result+"</td></tr>");
+        }
+    }
+
+</script>
+</body>
+</html>
